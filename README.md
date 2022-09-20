@@ -1,7 +1,7 @@
 # translation-supporter
 
 ## About
-It makes it easy to translate a lyrics into English line by line.
+It makes it easier to translate a lyrics into other language line by line.
 
 ## Installation
 ```
