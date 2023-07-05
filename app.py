@@ -135,11 +135,15 @@ class App(ttk.Frame):
 
     def save_translated_lyrics(self, event=None):
         file = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('テキストファイル', '.txt')], initialdir='./')
+        if file == () or file == '':
+            return
         with open(file, 'w') as f:
             f.write(self.textbox_frame_right.get(1.0, tk.END))
 
     def save_original_lyrics(self, event=None):
         file = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('テキストファイル', '.txt')], initialdir='./')
+        if file == () or file == '':
+            return
         with open(file, 'w') as f:
             f.write(self.textbox_frame_left.get(1.0, tk.END))
 
