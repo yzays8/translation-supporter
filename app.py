@@ -1,11 +1,12 @@
+import os
+import threading
+import configparser
 import tkinter as tk
 from tkinter import ttk, filedialog
 from tkinter.scrolledtext import ScrolledText
-import threading
-import os
+
 from console import Console
 from get_lyrics import GetLyrics
-import configparser
 
 class App(ttk.Frame):
     def __init__(self, master=None):
@@ -115,7 +116,7 @@ class App(ttk.Frame):
         self.textbox_frame_left.bind('<Button-1>', self.highlight_current_line)
         self.textbox_frame_right.bind('<Button-1>', self.highlight_current_line)
 
-        # フレーム配置
+        # 各ウィジェット配置
         topLabel_frame_left.pack(side=tk.TOP)
         topLabel_frame_right.pack(side=tk.TOP)
         clear_origLyric_button.pack(side=tk.BOTTOM, pady=5)
@@ -127,6 +128,7 @@ class App(ttk.Frame):
         self.console_frame_console.grid(row=0, sticky=tk.W+tk.E+tk.N+tk.S)
         self.textbox_frame_console.grid(row=2, pady=5, sticky=tk.W+tk.E)
 
+        # フレーム配置
         frame_left.grid(column=0, row=0, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
         frame_right.grid(column=1, row=0, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
         frame_console.grid(row=1, columnspan=2, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
