@@ -64,16 +64,16 @@ class App(ttk.Frame):
         topLabel_frame_right = ttk.Label(frame_right, text='翻訳文')
 
         # 原文クリアボタン
-        clear_origLyric_button = ttk.Button(frame_left, text='クリア', command=lambda:self.textbox_frame_left.delete(1.0, tk.END))
+        clear_orig_button = ttk.Button(frame_left, text='クリア', command=lambda:self.textbox_frame_left.delete(1.0, tk.END))
 
         # 原文保存ボタン
-        save_original_button = ttk.Button(frame_left, text='保存', command=self.save_original_lyrics)
+        save_orig_button = ttk.Button(frame_left, text='保存', command=self.save_original_lyrics)
 
         # 翻訳文クリアボタン
-        get_transLyric_button = ttk.Button(frame_right, text='クリア', command=lambda:self.textbox_frame_right.delete(1.0, tk.END))
+        get_trans_button = ttk.Button(frame_right, text='クリア', command=lambda:self.textbox_frame_right.delete(1.0, tk.END))
 
         # 翻訳文保存ボタン
-        save_translated_button = ttk.Button(frame_right, text='保存', command=self.save_translated_lyrics)
+        save_trans_button = ttk.Button(frame_right, text='保存', command=self.save_translated_lyrics)
 
         # 原文テキストボックス
         self.textbox_frame_left = ScrolledText(frame_left)
@@ -119,10 +119,10 @@ class App(ttk.Frame):
         # 各ウィジェット配置
         topLabel_frame_left.pack(side=tk.TOP)
         topLabel_frame_right.pack(side=tk.TOP)
-        clear_origLyric_button.pack(side=tk.BOTTOM, pady=5)
-        save_original_button.pack(side=tk.BOTTOM, pady=5)
-        get_transLyric_button.pack(side=tk.BOTTOM, pady=5)
-        save_translated_button.pack(side=tk.BOTTOM, pady=5)
+        clear_orig_button.pack(side=tk.BOTTOM, pady=5)
+        save_orig_button.pack(side=tk.BOTTOM, pady=5)
+        get_trans_button.pack(side=tk.BOTTOM, pady=5)
+        save_trans_button.pack(side=tk.BOTTOM, pady=5)
         self.textbox_frame_left.pack(fill=tk.BOTH, expand=True)
         self.textbox_frame_right.pack(fill=tk.BOTH, expand=True)
         self.console_frame_console.grid(row=0, sticky=tk.W+tk.E+tk.N+tk.S)

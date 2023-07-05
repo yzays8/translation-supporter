@@ -1,6 +1,5 @@
-from urllib.error import HTTPError
-from lyricsgenius import Genius
 import requests.exceptions
+from lyricsgenius import Genius
 
 class GetLyrics():
     def __init__(self):
