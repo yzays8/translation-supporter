@@ -149,6 +149,8 @@ class App(ttk.Frame):
 
     def menu_file_open_click(self, event=None):
         file = filedialog.askopenfilename(filetypes=[('テキストファイル', '.txt')], initialdir='./')
+        if file == () or file == '':
+            return
         with open(file, 'r') as f:
             self.textbox_frame_right.insert(tk.END, f.read())
 
