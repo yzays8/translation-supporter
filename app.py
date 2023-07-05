@@ -55,36 +55,42 @@ class App(ttk.Frame):
         # 原文フレーム
         frame_left = ttk.Frame(self, width=280, height=500, borderwidth=3)
         frame_left.pack_propagate(0)
-        frame_left.grid(column=0, row=0, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
         topLabel_frame_left = ttk.Label(frame_left, text='原文')
-        topLabel_frame_left.pack(side=tk.TOP)
-
-        self.textbox_frame_left = ScrolledText(frame_left)
-        self.textbox_frame_left.pack(fill=tk.BOTH, expand=True)
 
         # 翻訳文フレーム
         frame_right = ttk.Frame(self, width=280, height=500, borderwidth=3)
         frame_right.pack_propagate(0)
-
-        frame_right.grid(column=1, row=0, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
         topLabel_frame_right = ttk.Label(frame_right, text='翻訳文')
-        topLabel_frame_right.pack(side=tk.TOP)
 
+        # 原文クリアボタン
+        clear_origLyric_button = ttk.Button(frame_left, text='クリア', command=lambda:self.textbox_frame_left.delete(1.0, tk.END))
+
+        # 原文保存ボタン
+        save_original_button = ttk.Button(frame_left, text='保存', command=self.save_original_lyrics)
+
+        # 翻訳文クリアボタン
+        get_transLyric_button = ttk.Button(frame_right, text='クリア', command=lambda:self.textbox_frame_right.delete(1.0, tk.END))
+
+        # 翻訳文保存ボタン
+        save_translated_button = ttk.Button(frame_right, text='保存', command=self.save_translated_lyrics)
+
+        # 原文テキストボックス
+        self.textbox_frame_left = ScrolledText(frame_left)
+
+        # 翻訳文テキストボックス
         self.textbox_frame_right = ScrolledText(frame_right)
-        self.textbox_frame_right.pack(fill=tk.BOTH, expand=True)
 
         # コンソールフレーム
-        frame_console = ttk.Frame(self, width=540, height=100, borderwidth=3, relief=tk.GROOVE)
+        frame_console = ttk.Frame(self, width=540, height=100, borderwidth=3)
         frame_console.pack_propagate(0)
-        frame_console.grid(row=1, columnspan=2, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
 
+        # コンソール・指示文
         self.console_frame_console = ScrolledText(frame_console)
         self.console_frame_console.configure(state='disabled')  # 書き込み禁止
-        self.console_frame_console.grid(row=0, sticky=tk.W+tk.E+tk.N+tk.S)
         self.console = Console(self.console_frame_console)
         self.console.write('Enter artist name: ')
 
-        # テキストボックス
+        # コンソール・テキストボックス
         self.textboxvar_frame_console = tk.StringVar(frame_console)
         self.default_text = 'アーティスト名を入力してください...'
         self.textboxvar_frame_console.set(self.default_text)
@@ -92,8 +98,6 @@ class App(ttk.Frame):
         self.textbox_frame_console.config(foreground='gray')
         self.textbox_frame_console.bind('<Button-1>', self.click_textbox_frame_console)
         self.textbox_frame_console.bind('<Return>', self.enter_textbox_frame_console)
-
-        self.textbox_frame_console.grid(row=1, pady=5, sticky=tk.W+tk.E)
 
         frame_console.columnconfigure(0, weight=1)
         frame_console.rowconfigure(0, weight=1)
@@ -111,21 +115,21 @@ class App(ttk.Frame):
         self.textbox_frame_left.bind('<Button-1>', self.highlight_current_line)
         self.textbox_frame_right.bind('<Button-1>', self.highlight_current_line)
 
-        # 原文クリアボタン
-        clear_origLyric_button = ttk.Button(frame_left, text='クリア', command=lambda:self.textbox_frame_left.delete(1.0, tk.END))
+        # フレーム配置
+        topLabel_frame_left.pack(side=tk.TOP)
+        topLabel_frame_right.pack(side=tk.TOP)
         clear_origLyric_button.pack(side=tk.BOTTOM, pady=5)
-
-        # 原文保存ボタン
-        save_original_button = ttk.Button(frame_left, text='保存', command=self.save_original_lyrics)
         save_original_button.pack(side=tk.BOTTOM, pady=5)
-
-        # 翻訳文クリアボタン
-        get_transLyric_button = ttk.Button(frame_right, text='クリア', command=lambda:self.textbox_frame_right.delete(1.0, tk.END))
         get_transLyric_button.pack(side=tk.BOTTOM, pady=5)
-
-        # 翻訳文保存ボタン
-        save_translated_button = ttk.Button(frame_right, text='保存', command=self.save_translated_lyrics)
         save_translated_button.pack(side=tk.BOTTOM, pady=5)
+        self.textbox_frame_left.pack(fill=tk.BOTH, expand=True)
+        self.textbox_frame_right.pack(fill=tk.BOTH, expand=True)
+        self.console_frame_console.grid(row=0, sticky=tk.W+tk.E+tk.N+tk.S)
+        self.textbox_frame_console.grid(row=2, pady=5, sticky=tk.W+tk.E)
+
+        frame_left.grid(column=0, row=0, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
+        frame_right.grid(column=1, row=0, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
+        frame_console.grid(row=1, columnspan=2, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
 
     def save_translated_lyrics(self, event=None):
         file = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('テキストファイル', '.txt')], initialdir='./')
@@ -200,7 +204,10 @@ class App(ttk.Frame):
             self.textbox_frame_console.config(foreground='black')
 
     def enter_textbox_frame_console(self, event):
-        if threading.active_count() == 1:
+        for th in threading.enumerate():
+            if th.name == 'work':
+                break
+        else:
             if (self.is_waiting_song_name == False) and (self.is_processing == True):
                 self.is_processing = False
 
@@ -221,7 +228,7 @@ class App(ttk.Frame):
                 self.is_waiting_song_name = False
                 self.textbox_frame_console.delete(0, tk.END)
                 self.console.write(song_name + '\n')
-                thread = threading.Thread(target=lambda: self.genius.get_lyrics(self.console, self.artist_name, song_name, self.textbox_frame_left)).start()
+                self.thread = threading.Thread(name='work', target=lambda: self.genius.get_lyrics(self.console, self.artist_name, song_name, self.textbox_frame_left)).start()
 
 
 if __name__  == '__main__':
