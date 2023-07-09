@@ -23,6 +23,10 @@ class GetLyrics():
                 output_form.insert('end', song.lyrics)
         except requests.exceptions.HTTPError as e:
             console.write('Token is expired...\n\nEnter artist name: ')
+        except requests.exceptions.ConnectionError as e:
+            console.write('Connection Error...\n\nEnter artist name: ')
+        except requests.exceptions.Timeout as e:
+            console.write('Timeout Error...\n\nEnter artist name: ')
 
     def set_token(self, token):
         self.token = token
