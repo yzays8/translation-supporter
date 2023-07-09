@@ -40,7 +40,6 @@ class App(ttk.Frame):
         self.root.config(menu=menubar)
 
         # フラグ
-        self.is_processing = False
         self.is_waiting_song_name = False
 
         # フィールド
@@ -216,20 +215,16 @@ class App(ttk.Frame):
             if th.name == 'work':
                 break
         else:
-            if (self.is_waiting_song_name == False) and (self.is_processing == True):
-                self.is_processing = False
-
             self.config.read(self.config_path)
             self.genius.set_token(self.config['CLIENT']['CLIENT_ACCESS_TOKEN'])
 
             # アーティスト名の入力待ち
-            if (artist_name:=self.textbox_frame_console.get()) != '' and not self.is_processing:
+            if (artist_name:=self.textbox_frame_console.get()) != '' and not self.is_waiting_song_name:
                 self.artist_name = artist_name
                 self.console.write(artist_name + '\n')
                 self.console.write('Enter song name: ')
                 self.textbox_frame_console.delete(0, tk.END)
                 self.is_waiting_song_name = True
-                self.is_processing = True
 
             # 曲名の入力待ち
             if (song_name:=self.textbox_frame_console.get()) != '' and self.is_waiting_song_name:
