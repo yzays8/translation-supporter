@@ -14,7 +14,7 @@ class App(ttk.Frame):
     def __init__(self, master=None):
         super().__init__(master, borderwidth=3)
         self.root = master
-        self.root.title('Lyrics')
+        self.root.title('Translation Support Tool')
         self.root.geometry('600x900')
         self.pack(fill=tk.BOTH, expand=True)
 
