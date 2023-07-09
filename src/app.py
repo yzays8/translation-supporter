@@ -2,13 +2,15 @@ import os
 import threading
 import configparser
 import tkinter as tk
-from tkinter import ttk, filedialog
+from tkinter import ttk, filedialog, INSERT
 from tkinter.scrolledtext import ScrolledText
 
 from console import Console
 from get_lyrics import GetLyrics
 
 class App(ttk.Frame):
+    HIGHLIGHT_COLOR = '#7cc7e8'
+
     def __init__(self, master=None):
         super().__init__(master, borderwidth=3)
         self.root = master
@@ -109,11 +111,13 @@ class App(ttk.Frame):
         self.rowconfigure(0, weight=1)
         self.rowconfigure(1, weight=1)
 
-        # クリック行のハイライト表示
-        self.textbox_frame_left.tag_configure('clicked_line', background='#7cc7e8')
-        self.textbox_frame_right.tag_configure('clicked_line', background='#7cc7e8')
-        self.textbox_frame_left.bind('<Button-1>', self.highlight_current_line)
-        self.textbox_frame_right.bind('<Button-1>', self.highlight_current_line)
+        # ハイライト表示
+        self.textbox_frame_left.tag_configure('highlight', background=self.HIGHLIGHT_COLOR)
+        self.textbox_frame_right.tag_configure('highlight', background=self.HIGHLIGHT_COLOR)
+        self.textbox_frame_left.bind("<KeyRelease>", self.highlight_current_line_left)
+        self.textbox_frame_left.bind("<ButtonRelease-1>", self.highlight_current_line_left)
+        self.textbox_frame_right.bind("<KeyRelease>", self.highlight_current_line_right)
+        self.textbox_frame_right.bind("<ButtonRelease-1>", self.highlight_current_line_right)
 
         # 各ウィジェット配置
         topLabel_frame_left.pack(side=tk.TOP)
@@ -193,15 +197,25 @@ class App(ttk.Frame):
             self.config.write(configfile)
         self.option_window.destroy()
 
-    def highlight_current_line(self, event):
-        line_start = self.textbox_frame_left.index('@%s,%s linestart' % (event.x, event.y))
-        line_left_end = self.textbox_frame_left.index('%s lineend' % line_start)
-        line_right_end = self.textbox_frame_right.index('%s lineend' % line_start)
+    def highlight_current_line_left(self, event):
+        cursor_pos = self.textbox_frame_left.index(INSERT)
+        line_number = int(cursor_pos.split('.')[0])
+        line_start = f'{line_number}.0'
+        line_end = f'{line_number + 1}.0'
+        self.textbox_frame_left.tag_remove('highlight', '1.0', 'end')
+        self.textbox_frame_left.tag_add('highlight', line_start, line_end)
+        self.textbox_frame_right.tag_remove('highlight', '1.0', 'end')
+        self.textbox_frame_right.tag_add('highlight', line_start, line_end)
 
-        self.textbox_frame_left.tag_remove('clicked_line', 1.0, 'end')
-        self.textbox_frame_right.tag_remove('clicked_line', 1.0, 'end')
-        self.textbox_frame_left.tag_add('clicked_line', line_start, line_left_end)
-        self.textbox_frame_right.tag_add('clicked_line', line_start, line_right_end)
+    def highlight_current_line_right(self, event):
+        cursor_pos = self.textbox_frame_right.index(INSERT)
+        line_number = int(cursor_pos.split('.')[0])
+        line_start = f'{line_number}.0'
+        line_end = f'{line_number + 1}.0'
+        self.textbox_frame_left.tag_remove('highlight', '1.0', 'end')
+        self.textbox_frame_left.tag_add('highlight', line_start, line_end)
+        self.textbox_frame_right.tag_remove('highlight', '1.0', 'end')
+        self.textbox_frame_right.tag_add('highlight', line_start, line_end)
 
     def click_textbox_frame_console(self, event):
         self.textbox_frame_console.config(foreground='black')
