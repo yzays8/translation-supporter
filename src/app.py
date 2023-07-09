@@ -6,7 +6,7 @@ from tkinter import ttk, filedialog, INSERT
 from tkinter.scrolledtext import ScrolledText
 
 from console import Console
-from get_lyrics import GetLyrics
+from lyrics import GetLyrics
 
 class App(ttk.Frame):
     HIGHLIGHT_COLOR = '#7cc7e8'
