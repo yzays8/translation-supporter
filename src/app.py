@@ -160,7 +160,7 @@ class App(ttk.Frame):
     def open_option(self):
         self.option_window = tk.Toplevel(self.root)
         self.option_window.title('設定')
-        self.option_window.geometry('450x100')
+        self.option_window.geometry('800x100')
         self.option_window.resizable(False, False)
 
         if os.path.exists(self.config_path):
@@ -176,12 +176,12 @@ class App(ttk.Frame):
                 self.config.write(configfile)
 
         ttk.Label(self.option_window, text='Client Access Token :').grid(row=0, column=0, padx=5, pady=5)
-        self.textbox_token = ttk.Entry(self.option_window, width=50)
+        self.textbox_token = ttk.Entry(self.option_window, width=70, show='*')
         self.textbox_token.insert(0, self.config['CLIENT']['CLIENT_ACCESS_TOKEN'])
         self.textbox_token.grid(row=0, column=1, padx=5, pady=5)
 
-        ttk.Label(self.option_window, text='曲リストの検索数 :').grid(row=1, column=0, padx=5, pady=5)
-        self.textbox_num = ttk.Entry(self.option_window, width=20)
+        ttk.Label(self.option_window, text='曲リストの検索数         :').grid(row=1, column=0, padx=5, pady=5)
+        self.textbox_num = ttk.Entry(self.option_window, width=70)
         self.textbox_num.insert(0, self.config['DEFAULT']['Search'])
         self.textbox_num.grid(row=1, column=1, padx=5, pady=5)
 
