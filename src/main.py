@@ -1,7 +1,7 @@
-from app import start_app
+import tst
 
 def main() -> None:
-    start_app()
+    tst.start_app()
 
 if __name__ == '__main__':
     main()

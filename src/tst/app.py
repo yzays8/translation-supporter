@@ -3,10 +3,10 @@ import configparser
 
 import tkinter as tk
 
-import components
-
 from tkinter import ttk
-from lyrics_fetcher import LyricsFetcher
+
+from .lyrics_fetcher import LyricsFetcher
+from . import components
 
 class App(ttk.Frame):
     HIGHLIGHT_COLOR = '#7cc7e8'

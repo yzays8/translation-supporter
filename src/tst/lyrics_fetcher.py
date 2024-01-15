@@ -3,7 +3,7 @@ import requests.exceptions
 from lyricsgenius import Genius
 from tkinter.scrolledtext import ScrolledText
 
-from components.io_area.log_window import LogWindow
+from .components.io_area.log_window import LogWindow
 
 class LyricsFetcher():
     def __init__(self, token: str = ''):
