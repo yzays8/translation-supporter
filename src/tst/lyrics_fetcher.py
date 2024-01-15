@@ -16,8 +16,10 @@ class LyricsFetcher():
             genius.remove_section_headers = True
 
             # Search for the artist
-            if (song_list := genius.search_artist(artist_name, max_songs=limit)) is None:
+            song_list = genius.search_artist(artist_name, max_songs=limit)
+            if song_list is None:
                 log_window.write('search artist error\n\nEnter artist name: ')
+                return
 
             # Search for the song
             if (song := song_list.song(song_name)) is None:
