@@ -7,11 +7,12 @@ import tkinter as tk
 from tkinter import ttk, filedialog, INSERT
 from tkinter.scrolledtext import ScrolledText
 
-from console import Console
-from lyrics import GetLyrics
+from console import LogWindow
+from lyrics import LyricsFetcher
 
 class App(ttk.Frame):
     HIGHLIGHT_COLOR = '#7cc7e8'
+    CONFIG_PATH = 'option.ini'
 
     def __init__(self, master=None):
         super().__init__(master, borderwidth=3)
@@ -25,18 +26,18 @@ class App(ttk.Frame):
 
         # ファイルメニュー
         menu_file = tk.Menu(menubar, tearoff=0)    # tearoff=0で切り取り線非表示
-        menu_file.add_command(label='ファイルを開く', command=self.menu_file_open_click, accelerator='Ctrl+O')
-        menu_file.bind_all('<Control-o>', self.menu_file_open_click)
-        menu_file.add_command(label='原文を保存', command=self.save_original_lyrics, accelerator='Ctrl+W')
-        menu_file.add_command(label='翻訳文を保存', command=self.save_translated_lyrics, accelerator='Ctrl+S')
-        menu_file.bind_all('<Control-w>', self.save_original_lyrics)
-        menu_file.bind_all('<Control-s>', self.save_translated_lyrics)
+        menu_file.add_command(label='ファイルを開く', command=self.handle_menu_file_open_click, accelerator='Ctrl+O')
+        menu_file.bind_all('<Control-o>', self.handle_menu_file_open_click)
+        menu_file.add_command(label='原文を保存', command=self.handle_save_original_lyrics, accelerator='Ctrl+W')
+        menu_file.add_command(label='翻訳文を保存', command=self.handle_save_translated_lyrics, accelerator='Ctrl+S')
+        menu_file.bind_all('<Control-w>', self.handle_save_original_lyrics)
+        menu_file.bind_all('<Control-s>', self.handle_save_translated_lyrics)
         menu_file.add_separator()   # 仕切り線
         menu_file.add_command(label='終了', command=self.root.destroy)
 
         # オプションメニュー
         menu_option = tk.Menu(menubar, tearoff=0)
-        menu_option.add_command(label='設定', command=self.open_option)
+        menu_option.add_command(label='設定', command=self.handle_open_option)
 
         # メニューバー表示
         menubar.add_cascade(label='ファイル', menu=menu_file)
@@ -47,15 +48,14 @@ class App(ttk.Frame):
         self.is_waiting_song_name = False
 
         # フィールド
-        self.genius = GetLyrics()
+        self.lyrics_fetcher = LyricsFetcher()
         self.artist_name = ''
         self.config = configparser.ConfigParser()
-        self.config_path = 'option.ini'
 
         self.pack_propagate(0)  # フレーム内のウィジェットサイズに合わせてフレームサイズが変化するの防ぐ
         self.create_widgets()
 
-    def create_widgets(self):
+    def create_widgets(self) -> None:
         # 原文フレーム
         frame_left = ttk.Frame(self, width=280, height=500, borderwidth=3)
         frame_left.pack_propagate(0)
@@ -70,13 +70,13 @@ class App(ttk.Frame):
         clear_orig_button = ttk.Button(frame_left, text='クリア', command=lambda:self.textbox_frame_left.delete(1.0, tk.END))
 
         # 原文保存ボタン
-        save_orig_button = ttk.Button(frame_left, text='保存', command=self.save_original_lyrics)
+        save_orig_button = ttk.Button(frame_left, text='保存', command=self.handle_save_original_lyrics)
 
         # 翻訳文クリアボタン
         get_trans_button = ttk.Button(frame_right, text='クリア', command=lambda:self.textbox_frame_right.delete(1.0, tk.END))
 
         # 翻訳文保存ボタン
-        save_trans_button = ttk.Button(frame_right, text='保存', command=self.save_translated_lyrics)
+        save_trans_button = ttk.Button(frame_right, text='保存', command=self.handle_save_translated_lyrics)
 
         # 原文テキストボックス
         self.textbox_frame_left = ScrolledText(frame_left)
@@ -91,7 +91,7 @@ class App(ttk.Frame):
         # コンソール・指示文
         self.console_frame_console = ScrolledText(frame_console)
         self.console_frame_console.configure(state='disabled')  # 書き込み禁止
-        self.console = Console(self.console_frame_console)
+        self.console = LogWindow(self.console_frame_console)
         self.console.write('Enter artist name: ')
 
         # コンソール・テキストボックス
@@ -100,8 +100,8 @@ class App(ttk.Frame):
         self.textboxvar_frame_console.set(self.default_text)
         self.textbox_frame_console = ttk.Entry(frame_console, textvariable=self.textboxvar_frame_console)
         self.textbox_frame_console.config(foreground='gray')
-        self.textbox_frame_console.bind('<Button-1>', self.click_textbox_frame_console)
-        self.textbox_frame_console.bind('<Return>', self.enter_textbox_frame_console)
+        self.textbox_frame_console.bind('<Button-1>', self.handle_click_textbox_frame_console)
+        self.textbox_frame_console.bind('<Return>', self.handle_enter_textbox_frame_console)
 
         frame_console.columnconfigure(0, weight=1)
         frame_console.rowconfigure(0, weight=1)
@@ -138,35 +138,35 @@ class App(ttk.Frame):
         frame_right.grid(column=1, row=0, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
         frame_console.grid(row=1, columnspan=2, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
 
-    def save_translated_lyrics(self, event=None):
+    def handle_save_translated_lyrics(self, event=None):
         file = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('テキストファイル', '.txt')], initialdir='./')
         if file == () or file == '':
             return
         with open(file, 'w') as f:
             f.write(self.textbox_frame_right.get(1.0, tk.END))
 
-    def save_original_lyrics(self, event=None):
+    def handle_save_original_lyrics(self, event=None):
         file = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('テキストファイル', '.txt')], initialdir='./')
         if file == () or file == '':
             return
         with open(file, 'w') as f:
             f.write(self.textbox_frame_left.get(1.0, tk.END))
 
-    def menu_file_open_click(self, event=None):
+    def handle_menu_file_open_click(self, event=None):
         file = filedialog.askopenfilename(filetypes=[('テキストファイル', '.txt')], initialdir='./')
         if file == () or file == '':
             return
         with open(file, 'r') as f:
             self.textbox_frame_right.insert(tk.END, f.read())
 
-    def open_option(self):
+    def handle_open_option(self):
         self.option_window = tk.Toplevel(self.root)
         self.option_window.title('設定')
         self.option_window.geometry('800x100')
         self.option_window.resizable(False, False)
 
-        if os.path.exists(self.config_path):
-            self.config.read(self.config_path)
+        if os.path.exists(self.CONFIG_PATH):
+            self.config.read(self.CONFIG_PATH)
         else:
             self.config['CLIENT'] = {
                 'CLIENT_ID' : 'default',
@@ -174,7 +174,7 @@ class App(ttk.Frame):
                 'CLIENT_ACCESS_TOKEN' : 'default'
             }
             self.config['DEFAULT']['Search'] = '0'
-            with open(self.config_path, 'w') as configfile:
+            with open(self.CONFIG_PATH, 'w') as configfile:
                 self.config.write(configfile)
 
         ttk.Label(self.option_window, text='Client Access Token :').grid(row=0, column=0, padx=5, pady=5)
@@ -187,15 +187,15 @@ class App(ttk.Frame):
         self.textbox_num.insert(0, self.config['DEFAULT']['Search'])
         self.textbox_num.grid(row=1, column=1, padx=5, pady=5)
 
-        ttk.Button(self.option_window, text='保存', command=self.save_config).grid(row=2, column=0, pady=5)
+        ttk.Button(self.option_window, text='保存', command=self.handle_save_config).grid(row=2, column=0, pady=5)
         ttk.Button(self.option_window, text='キャンセル', command=self.option_window.destroy).grid(row=2, column=1, pady=5)
 
         self.option_window.mainloop()
 
-    def save_config(self):
+    def handle_save_config(self):
         self.config['CLIENT']['CLIENT_ACCESS_TOKEN'] = self.textbox_token.get()
         self.config['DEFAULT']['Search'] = self.textbox_num.get()
-        with open(self.config_path, 'w') as configfile:
+        with open(self.CONFIG_PATH, 'w') as configfile:
             self.config.write(configfile)
         self.option_window.destroy()
 
@@ -219,23 +219,23 @@ class App(ttk.Frame):
         self.textbox_frame_right.tag_remove('highlight', '1.0', 'end')
         self.textbox_frame_right.tag_add('highlight', line_start, line_end)
 
-    def click_textbox_frame_console(self, event):
+    def handle_click_textbox_frame_console(self, event):
         self.textbox_frame_console.config(foreground='black')
         if self.textbox_frame_console.get() == self.default_text:
             event.widget.delete(0, tk.END)
         else:
             self.textbox_frame_console.config(foreground='black')
 
-    def enter_textbox_frame_console(self, event):
+    def handle_enter_textbox_frame_console(self, event):
         for th in threading.enumerate():
             if th.name == 'work':
                 break
         else:
-            self.config.read(self.config_path)
-            self.genius.set_token(self.config['CLIENT']['CLIENT_ACCESS_TOKEN'])
+            self.config.read(self.CONFIG_PATH)
+            self.lyrics_fetcher.set_token(self.config['CLIENT']['CLIENT_ACCESS_TOKEN'])
 
             # アーティスト名の入力待ち
-            if (artist_name:=self.textbox_frame_console.get()) != '' and not self.is_waiting_song_name:
+            if (artist_name := self.textbox_frame_console.get()) != '' and not self.is_waiting_song_name:
                 self.artist_name = artist_name
                 self.console.write(artist_name + '\n')
                 self.console.write('Enter song name: ')
@@ -243,11 +243,11 @@ class App(ttk.Frame):
                 self.is_waiting_song_name = True
 
             # 曲名の入力待ち
-            if (song_name:=self.textbox_frame_console.get()) != '' and self.is_waiting_song_name:
+            if (song_name := self.textbox_frame_console.get()) != '' and self.is_waiting_song_name:
                 self.is_waiting_song_name = False
                 self.textbox_frame_console.delete(0, tk.END)
                 self.console.write(song_name + '\n')
-                self.thread = threading.Thread(name='work', target=lambda: self.genius.get_lyrics(self.console, self.artist_name, song_name, self.textbox_frame_left)).start()
+                self.thread = threading.Thread(name='work', target=lambda: self.lyrics_fetcher.get_lyrics(self.console, self.artist_name, song_name, self.textbox_frame_left)).start()
 
 def start_app():
     root = tk.Tk()
