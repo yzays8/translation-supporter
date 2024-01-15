@@ -9,7 +9,6 @@ from .lyrics_fetcher import LyricsFetcher
 from . import components
 
 class App(ttk.Frame):
-    HIGHLIGHT_COLOR = '#7cc7e8'
     CONFIG_PATH = 'option.ini'
 
     def __init__(self, master=None):
