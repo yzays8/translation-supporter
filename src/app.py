@@ -1,7 +1,9 @@
 import os
 import threading
 import configparser
+
 import tkinter as tk
+
 from tkinter import ttk, filedialog, INSERT
 from tkinter.scrolledtext import ScrolledText
 
@@ -30,7 +32,7 @@ class App(ttk.Frame):
         menu_file.bind_all('<Control-w>', self.save_original_lyrics)
         menu_file.bind_all('<Control-s>', self.save_translated_lyrics)
         menu_file.add_separator()   # 仕切り線
-        menu_file.add_command(label='終了', command=root.destroy)
+        menu_file.add_command(label='終了', command=self.root.destroy)
 
         # オプションメニュー
         menu_option = tk.Menu(menubar, tearoff=0)
@@ -247,8 +249,7 @@ class App(ttk.Frame):
                 self.console.write(song_name + '\n')
                 self.thread = threading.Thread(name='work', target=lambda: self.genius.get_lyrics(self.console, self.artist_name, song_name, self.textbox_frame_left)).start()
 
-
-if __name__  == '__main__':
+def start_app():
     root = tk.Tk()
     app = App(master=root)
     app.mainloop()
