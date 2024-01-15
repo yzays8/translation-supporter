@@ -1,11 +1,13 @@
 #!/bin/bash
 
-VENV_DIR=".venv"
+set -eu
 
-if [[ ! -d "$VENV_DIR" ]]; then
+readonly VENV_DIR=".venv"
+
+if [ ! -d "$VENV_DIR" ]; then
     bash build.sh
 fi
 
-source .venv/bin/activate
+source $VENV_DIR/bin/activate
 python3 src/app.py
 deactivate
