@@ -1,11 +1,13 @@
 #!/bin/bash
 
-VENV_DIR=".venv"
+set -eu
 
-if [[ ! -d "$VENV_DIR" ]]; then
+readonly VENV_DIR=".venv"
+
+if [ ! -d "$VENV_DIR" ]; then
     python3 -m venv .venv
 fi
 
-source .venv/bin/activate
+source $VENV_DIR/bin/activate
 pip3 install -r requirements.txt
 deactivate
