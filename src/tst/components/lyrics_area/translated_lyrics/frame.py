@@ -1,6 +1,7 @@
 import tkinter as tk
 
 from tkinter import ttk
+from typing import Callable
 
 from .label import TranslatedLyricsLabel
 from .save_button import SaveTranslatedLyricsButton
@@ -8,7 +9,7 @@ from .clear_button import ClearTranslatedLyricsButton
 from .text_box import TranslatedLyricsTextBox
 
 class TranslatedLyricsFrame(ttk.Frame):
-    def __init__(self, parent=None) -> None:
+    def __init__(self, parent, highlight: Callable[[int, int], None]) -> None:
         super().__init__(parent, width=280, height=500, borderwidth=3)
         self.parent = parent
         self.root = parent.root
@@ -16,7 +17,7 @@ class TranslatedLyricsFrame(ttk.Frame):
         self.label = TranslatedLyricsLabel(self)
         self.save_button = SaveTranslatedLyricsButton(self)
         self.clear_button = ClearTranslatedLyricsButton(self)
-        self.text_box = TranslatedLyricsTextBox(self)
+        self.text_box = TranslatedLyricsTextBox(self, highlight)
 
         self._create_widgets()
 

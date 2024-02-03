@@ -1,18 +1,19 @@
 import tkinter as tk
 
 from tkinter import ttk
+from typing import Callable
 
 from .original_lyrics.frame import OriginalLyricsFrame
 from .translated_lyrics.frame import TranslatedLyricsFrame
 
 class LyricsArea(ttk.Frame):
-    def __init__(self, parent=None) -> None:
+    def __init__(self, parent, highlight: Callable[[int, int], None]) -> None:
         super().__init__(parent)
         self.parent = parent
         self.root = parent.root
 
-        self.original_lyrics_frame = OriginalLyricsFrame(self)
-        self.translated_lyrics_frame = TranslatedLyricsFrame(self)
+        self.original_lyrics_frame = OriginalLyricsFrame(self, highlight)
+        self.translated_lyrics_frame = TranslatedLyricsFrame(self, highlight)
 
         self._create_widgets()
 

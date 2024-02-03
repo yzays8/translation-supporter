@@ -24,13 +24,15 @@ class App(ttk.Frame):
         self._artist_name = ''
         self.config = configparser.ConfigParser()
 
-        # Menu bar
-        self.menu_bar = components.MenuBar(self, config=self.config)
-        self.root.config(menu=self.menu_bar)
-
         self.lyrics_fetcher = LyricsFetcher()
-        self.lyrics_area = components.LyricsArea(self)
+        self.lyrics_area = components.LyricsArea(self, self.highlight)
         self.io_area = components.IOArea(self)
+
+        # Menu bar
+        ot = self.lyrics_area.original_lyrics_frame.text_box
+        tt = self.lyrics_area.translated_lyrics_frame.text_box
+        self.menu_bar = components.MenuBar(self, self.config, ot, tt)
+        self.root.config(menu=self.menu_bar)
 
         self._create_widgets()
 
@@ -41,6 +43,12 @@ class App(ttk.Frame):
 
         self.lyrics_area.grid(column=0, row=0, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
         self.io_area.grid(column=0, row=1, columnspan=2, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
+
+    def highlight(self, line_start: str, line_end: str) -> None:
+        self.lyrics_area.original_lyrics_frame.text_box.tag_remove('highlight', '1.0', 'end')
+        self.lyrics_area.original_lyrics_frame.text_box.tag_add('highlight', line_start, line_end)
+        self.lyrics_area.translated_lyrics_frame.text_box.tag_remove('highlight', '1.0', 'end')
+        self.lyrics_area.translated_lyrics_frame.text_box.tag_add('highlight', line_start, line_end)
 
     def fetch_lyrics(self) -> None:
         for th in threading.enumerate():

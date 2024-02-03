@@ -1,14 +1,15 @@
 import tkinter as tk
 
 from tkinter.scrolledtext import ScrolledText
+from typing import Callable
 
 class TranslatedLyricsTextBox(ScrolledText):
     HIGHLIGHT_COLOR = '#7cc7e8'
 
-    def __init__(self, parent) -> None:
+    def __init__(self, parent, highlight: Callable[[int, int], None]) -> None:
         super().__init__(parent)
         self.parent = parent
-        self.root = parent.root
+        self.highlight = highlight
 
         # Highlight current line
         self.tag_configure('highlight', background=self.HIGHLIGHT_COLOR)
@@ -21,9 +22,6 @@ class TranslatedLyricsTextBox(ScrolledText):
         line_number = int(cursor_pos.split('.')[0])
         line_start = f'{line_number}.0'
         line_end = f'{line_number + 1}.0'
-        self.tag_remove('highlight', '1.0', 'end')
-        self.tag_add('highlight', line_start, line_end)
 
         # Sync the highlighted line with the original lyrics
-        self.parent.parent.original_lyrics_frame.text_box.tag_remove('highlight', '1.0', 'end')
-        self.parent.parent.original_lyrics_frame.text_box.tag_add('highlight', line_start, line_end)
+        self.highlight(line_start, line_end)
