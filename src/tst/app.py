@@ -11,7 +11,7 @@ from . import components
 class App(ttk.Frame):
     CONFIG_PATH = 'option.ini'
 
-    def __init__(self, master=None):
+    def __init__(self, master=None) -> None:
         super().__init__(master, borderwidth=3)
         self.root = master
         self.root.title('Translation Support Tool')
@@ -20,8 +20,8 @@ class App(ttk.Frame):
         self.pack(fill=tk.BOTH, expand=True)
         self.pack_propagate(0)
 
-        self.is_waiting_song_name = False
-        self.artist_name = ''
+        self._is_waiting_song_name = False
+        self._artist_name = ''
         self.config = configparser.ConfigParser()
 
         # Menu bar
@@ -32,9 +32,9 @@ class App(ttk.Frame):
         self.lyrics_area = components.LyricsArea(self)
         self.io_area = components.IOArea(self)
 
-        self.create_widgets()
+        self._create_widgets()
 
-    def create_widgets(self) -> None:
+    def _create_widgets(self) -> None:
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
@@ -51,20 +51,20 @@ class App(ttk.Frame):
             self.lyrics_fetcher.set_token(self.config['CLIENT']['CLIENT_ACCESS_TOKEN'])
 
             # Wait for the artist name to be entered
-            if (artist_name := self.io_area.command_input_box.get()) != '' and not self.is_waiting_song_name:
-                self.artist_name = artist_name
-                self.io_area.log_window.write(f'{artist_name}\n')
-                self.io_area.log_window.write('Enter song name: ')
-                self.io_area.command_input_box.delete(0, tk.END)
-                self.is_waiting_song_name = True
+            if (artist_name := self.io_area._command_input_box.get()) != '' and not self._is_waiting_song_name:
+                self._artist_name = artist_name
+                self.io_area._log_window.write(f'{artist_name}\n')
+                self.io_area._log_window.write('Enter song name: ')
+                self.io_area._command_input_box.delete(0, tk.END)
+                self._is_waiting_song_name = True
 
             # Wait for the song name to be entered
-            if (song_name := self.io_area.command_input_box.get()) != '' and self.is_waiting_song_name:
-                self.is_waiting_song_name = False
-                self.io_area.command_input_box.delete(0, tk.END)
-                self.io_area.log_window.write(f'{song_name}\n')
+            if (song_name := self.io_area._command_input_box.get()) != '' and self._is_waiting_song_name:
+                self._is_waiting_song_name = False
+                self.io_area._command_input_box.delete(0, tk.END)
+                self.io_area._log_window.write(f'{song_name}\n')
                 self.connection_thread = threading.Thread(name='fetching_lyrics', target=lambda:
-                    self.lyrics_fetcher.get_lyrics(self.io_area.log_window, self.artist_name, song_name, self.lyrics_area.original_lyrics_frame.text_box
+                    self.lyrics_fetcher.get_lyrics(self.io_area._log_window, self._artist_name, song_name, self.lyrics_area.original_lyrics_frame.text_box
                 )).start()
 
 def start_app() -> None:

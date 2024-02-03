@@ -5,8 +5,6 @@ from tkinter.scrolledtext import ScrolledText
 class LogWindow(ScrolledText):
     def __init__(self, parent):
         super().__init__(parent)
-        self.parent = parent
-        self.root = parent.root
 
         # Prevents the user from editing the log
         self.configure(state='disabled')

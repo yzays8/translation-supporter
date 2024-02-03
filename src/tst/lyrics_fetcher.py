@@ -6,12 +6,12 @@ from tkinter.scrolledtext import ScrolledText
 from .components.io_area.log_window import LogWindow
 
 class LyricsFetcher():
-    def __init__(self, token: str = ''):
-        self.token = token
+    def __init__(self, token: str = '') -> None:
+        self._token = token
 
-    def get_lyrics(self, log_window: LogWindow, artist_name: str, song_name: str, output_form: ScrolledText, limit=1) -> None:
+    def get_lyrics(self, log_window: LogWindow, artist_name: str, song_name: str, output_form: ScrolledText, limit: int = 1) -> None:
         try:
-            genius = Genius(self.token)
+            genius = Genius(self._token)
             genius.verbose = False
             genius.remove_section_headers = True
 
@@ -40,7 +40,7 @@ class LyricsFetcher():
             log_window.write(f'Unknown Error: {e}\n\nEnter artist name: ')
 
     def set_token(self, token: str) -> None:
-        self.token = token
+        self._token = token
 
     def get_token(self) -> str:
-        return self.token
+        return self._token

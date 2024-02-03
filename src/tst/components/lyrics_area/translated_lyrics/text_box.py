@@ -4,7 +4,7 @@ from tkinter.scrolledtext import ScrolledText
 class TranslatedLyricsTextBox(ScrolledText):
     HIGHLIGHT_COLOR = '#7cc7e8'
 
-    def __init__(self, parent):
+    def __init__(self, parent) -> None:
         super().__init__(parent)
         self.parent = parent
         self.root = parent.root
@@ -12,10 +12,10 @@ class TranslatedLyricsTextBox(ScrolledText):
         # Highlight current line
         self.tag_configure('highlight', background=self.HIGHLIGHT_COLOR)
         self.tag_configure('highlight', background=self.HIGHLIGHT_COLOR)
-        self.bind("<KeyRelease>", self.highlight_current_line)
-        self.bind("<ButtonRelease-1>", self.highlight_current_line)
+        self.bind("<KeyRelease>", self._highlight_current_line)
+        self.bind("<ButtonRelease-1>", self._highlight_current_line)
 
-    def highlight_current_line(self, event=None) -> None:
+    def _highlight_current_line(self) -> None:
         cursor_pos = self.index(INSERT)
         line_number = int(cursor_pos.split('.')[0])
         line_start = f'{line_number}.0'

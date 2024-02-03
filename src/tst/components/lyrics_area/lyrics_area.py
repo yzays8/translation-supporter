@@ -6,7 +6,7 @@ from .original_lyrics.frame import OriginalLyricsFrame
 from .translated_lyrics.frame import TranslatedLyricsFrame
 
 class LyricsArea(ttk.Frame):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent)
         self.parent = parent
         self.root = parent.root
@@ -14,9 +14,9 @@ class LyricsArea(ttk.Frame):
         self.original_lyrics_frame = OriginalLyricsFrame(self)
         self.translated_lyrics_frame = TranslatedLyricsFrame(self)
 
-        self.create_widgets()
+        self._create_widgets()
 
-    def create_widgets(self) -> None:
+    def _create_widgets(self) -> None:
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)

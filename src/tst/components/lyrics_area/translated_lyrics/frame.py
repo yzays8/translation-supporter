@@ -8,7 +8,7 @@ from .clear_button import ClearTranslatedLyricsButton
 from .text_box import TranslatedLyricsTextBox
 
 class TranslatedLyricsFrame(ttk.Frame):
-    def __init__(self, parent=None):
+    def __init__(self, parent=None) -> None:
         super().__init__(parent, width=280, height=500, borderwidth=3)
         self.parent = parent
         self.root = parent.root
@@ -18,9 +18,9 @@ class TranslatedLyricsFrame(ttk.Frame):
         self.clear_button = ClearTranslatedLyricsButton(self)
         self.text_box = TranslatedLyricsTextBox(self)
 
-        self.create_widgets()
+        self._create_widgets()
 
-    def create_widgets(self) -> None:
+    def _create_widgets(self) -> None:
         self.grid_propagate(0)
         self.grid_columnconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
