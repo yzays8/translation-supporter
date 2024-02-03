@@ -1,4 +1,5 @@
-from tkinter import INSERT
+import tkinter as tk
+
 from tkinter.scrolledtext import ScrolledText
 
 class TranslatedLyricsTextBox(ScrolledText):
@@ -15,8 +16,8 @@ class TranslatedLyricsTextBox(ScrolledText):
         self.bind("<KeyRelease>", self._highlight_current_line)
         self.bind("<ButtonRelease-1>", self._highlight_current_line)
 
-    def _highlight_current_line(self) -> None:
-        cursor_pos = self.index(INSERT)
+    def _highlight_current_line(self, event: tk.Event = None) -> None:
+        cursor_pos = self.index(tk.INSERT)
         line_number = int(cursor_pos.split('.')[0])
         line_start = f'{line_number}.0'
         line_end = f'{line_number + 1}.0'

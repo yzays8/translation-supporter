@@ -10,6 +10,8 @@ from .text_box import OriginalLyricsTextBox
 class OriginalLyricsFrame(ttk.Frame):
     def __init__(self, parent=None) -> None:
         super().__init__(parent, width=280, height=500, borderwidth=3)
+        self.parent = parent
+        self.root = parent.root
 
         self.label = OriginalLyricsLabel(self)
         self.save_button = SaveOriginalLyricsButton(self)
