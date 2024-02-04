@@ -24,13 +24,13 @@ class App(ttk.Frame):
         self._artist_name = ''
         self.config = configparser.ConfigParser()
 
-        self.lyrics_fetcher = LyricsFetcher()
-        self.lyrics_area = components.LyricsArea(self, self.highlight)
-        self.io_area = components.IOArea(self)
+        self._lyrics_fetcher = LyricsFetcher()
+        self._lyrics_area = components.LyricsArea(self, self.highlight)
+        self._io_area = components.IOArea(self)
 
         # Menu bar
-        ot = self.lyrics_area.original_lyrics_frame.text_box
-        tt = self.lyrics_area.translated_lyrics_frame.text_box
+        ot = self._lyrics_area.original_lyrics_frame.text_box
+        tt = self._lyrics_area.translated_lyrics_frame.text_box
         self.menu_bar = components.MenuBar(self, self.config, ot, tt)
         self.root.config(menu=self.menu_bar)
 
@@ -41,14 +41,14 @@ class App(ttk.Frame):
         self.grid_rowconfigure(0, weight=1)
         self.grid_rowconfigure(1, weight=1)
 
-        self.lyrics_area.grid(column=0, row=0, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
-        self.io_area.grid(column=0, row=1, columnspan=2, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
+        self._lyrics_area.grid(column=0, row=0, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
+        self._io_area.grid(column=0, row=1, columnspan=2, padx=10, pady=5, sticky=tk.W+tk.E+tk.N+tk.S)
 
     def highlight(self, line_start: str, line_end: str) -> None:
-        self.lyrics_area.original_lyrics_frame.text_box.tag_remove('highlight', '1.0', 'end')
-        self.lyrics_area.original_lyrics_frame.text_box.tag_add('highlight', line_start, line_end)
-        self.lyrics_area.translated_lyrics_frame.text_box.tag_remove('highlight', '1.0', 'end')
-        self.lyrics_area.translated_lyrics_frame.text_box.tag_add('highlight', line_start, line_end)
+        self._lyrics_area.original_lyrics_frame.text_box.tag_remove('highlight', '1.0', 'end')
+        self._lyrics_area.original_lyrics_frame.text_box.tag_add('highlight', line_start, line_end)
+        self._lyrics_area.translated_lyrics_frame.text_box.tag_remove('highlight', '1.0', 'end')
+        self._lyrics_area.translated_lyrics_frame.text_box.tag_add('highlight', line_start, line_end)
 
     def fetch_lyrics(self) -> None:
         for th in threading.enumerate():
@@ -56,24 +56,24 @@ class App(ttk.Frame):
                 break
         else:
             self.config.read(self.CONFIG_PATH)
-            self.lyrics_fetcher.set_token(self.config['CLIENT']['CLIENT_ACCESS_TOKEN'])
+            self._lyrics_fetcher.set_token(self.config['CLIENT']['CLIENT_ACCESS_TOKEN'])
 
             # Wait for the artist name to be entered
-            if (artist_name := self.io_area._command_input_box.get()) != '' and not self._is_waiting_song_name:
+            if (artist_name := self._io_area._command_input_box.get()) != '' and not self._is_waiting_song_name:
                 self._artist_name = artist_name
-                self.io_area._log_window.write(f'{artist_name}\n')
-                self.io_area._log_window.write('Enter song name: ')
-                self.io_area._command_input_box.delete(0, tk.END)
+                self._io_area._log_window.write(f'{artist_name}\n')
+                self._io_area._log_window.write('Enter song name: ')
+                self._io_area._command_input_box.delete(0, tk.END)
                 self._is_waiting_song_name = True
 
             # Wait for the song name to be entered
-            if (song_name := self.io_area._command_input_box.get()) != '' and self._is_waiting_song_name:
+            if (song_name := self._io_area._command_input_box.get()) != '' and self._is_waiting_song_name:
                 self._is_waiting_song_name = False
-                self.io_area._command_input_box.delete(0, tk.END)
-                self.io_area._log_window.write(f'{song_name}\n')
+                self._io_area._command_input_box.delete(0, tk.END)
+                self._io_area._log_window.write(f'{song_name}\n')
                 self.connection_thread = threading.Thread(name='fetching_lyrics', target=lambda:
-                    self.lyrics_fetcher.get_lyrics(self.io_area._log_window, self._artist_name, song_name, self.lyrics_area.original_lyrics_frame.text_box
-                )).start()
+                    self._lyrics_fetcher.get_lyrics(self._io_area._log_window, self._artist_name, song_name, self._lyrics_area.original_lyrics_frame.text_box)
+                ).start()
 
 def start_app() -> None:
     root = tk.Tk()

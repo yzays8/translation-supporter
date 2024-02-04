@@ -15,8 +15,8 @@ class FileMenu(tk.Menu):
         self.parent = parent
         self.root = parent.root
 
-        self.original_lyrics_text_box = original_lyrics_text_box
-        self.translated_lyrics_text_box = translated_lyrics_text_box
+        self._original_lyrics_text_box = original_lyrics_text_box
+        self._translated_lyrics_text_box = translated_lyrics_text_box
 
         self.add_command(label='ファイルを開く', command=self._handle_open_file, accelerator='Ctrl+O')
         self.bind_all('<Control-o>', self._handle_open_file)
@@ -35,18 +35,18 @@ class FileMenu(tk.Menu):
         if file == () or file == '':
             return
         with open(file, 'r') as f:
-            self.original_lyrics_text_box.insert(tk.END, f.read())
+            self._original_lyrics_text_box.insert(tk.END, f.read())
 
     def _handle_save_orig_lyrics(self, event: tk.Event = None) -> None:
         file = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('テキストファイル', '.txt')], initialdir='./')
         if file == () or file == '':
             return
         with open(file, 'w') as f:
-            f.write(self.original_lyrics_text_box.get(1.0, tk.END))
+            f.write(self._original_lyrics_text_box.get(1.0, tk.END))
 
     def _handle_save_trans_lyrics(self, event: tk.Event = None) -> None:
         file = filedialog.asksaveasfilename(defaultextension='.txt', filetypes=[('テキストファイル', '.txt')], initialdir='./')
         if file == () or file == '':
             return
         with open(file, 'w') as f:
-            f.write(self.translated_lyrics_text_box.get(1.0, tk.END))
+            f.write(self._translated_lyrics_text_box.get(1.0, tk.END))
