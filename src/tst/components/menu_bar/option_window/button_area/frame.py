@@ -1,5 +1,3 @@
-import tkinter as tk
-
 from typing import Callable
 from configparser import ConfigParser
 from tkinter import ttk

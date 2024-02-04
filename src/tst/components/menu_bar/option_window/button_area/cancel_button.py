@@ -1,5 +1,3 @@
-import tkinter as tk
-
 from typing import Callable
 from tkinter import ttk
 
