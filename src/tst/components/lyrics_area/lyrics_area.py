@@ -1,7 +1,7 @@
 import tkinter as tk
 
 from tkinter import ttk
-from typing import Callable
+from collections.abc import Callable
 
 from .original_lyrics.frame import OriginalLyricsFrame
 from .translated_lyrics.frame import TranslatedLyricsFrame

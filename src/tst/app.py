@@ -1,3 +1,4 @@
+import os
 import threading
 import configparser
 
@@ -9,7 +10,7 @@ from .lyrics_fetcher import LyricsFetcher
 from . import components
 
 class App(ttk.Frame):
-    CONFIG_PATH = 'option.ini'
+    CONFIG_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../../option.ini'))
 
     def __init__(self, master=None) -> None:
         super().__init__(master, borderwidth=3)

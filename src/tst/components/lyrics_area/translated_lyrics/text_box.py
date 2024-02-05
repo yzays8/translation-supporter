@@ -1,7 +1,7 @@
 import tkinter as tk
 
 from tkinter.scrolledtext import ScrolledText
-from typing import Callable
+from collections.abc import Callable
 
 class TranslatedLyricsTextBox(ScrolledText):
     HIGHLIGHT_COLOR = '#7cc7e8'

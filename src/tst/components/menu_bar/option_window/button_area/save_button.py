@@ -2,7 +2,7 @@ import os
 import sys
 import tkinter as tk
 
-from typing import Callable
+from collections.abc import Callable
 from configparser import ConfigParser
 from tkinter import ttk
 

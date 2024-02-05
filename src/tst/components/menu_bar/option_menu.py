@@ -14,4 +14,4 @@ class OptionMenu(tk.Menu):
         self.add_command(label='設定', command=self._handle_open_option)
 
     def _handle_open_option(self, event: tk.Event = None) -> None:
-        OptionWindow(self.parent, self._config)
+        OptionWindow(self.parent, self._config).open()

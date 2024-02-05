@@ -1,7 +1,7 @@
 import tkinter as tk
 
 from tkinter import ttk
-from typing import Callable
+from collections.abc import Callable
 
 from .label import OriginalLyricsLabel
 from .save_button import SaveOriginalLyricsButton

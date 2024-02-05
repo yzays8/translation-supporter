@@ -32,6 +32,7 @@ class OptionWindow(tk.Toplevel):
 
         self._create_widgets()
 
+    def open(self) -> None:
         self.mainloop()
 
     def _setup_config(self) -> None:
